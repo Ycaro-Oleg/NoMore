@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL", nil) %>
+  database: no_more_development
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  username: <%= ENV.fetch("DB_USERNAME", "nomore") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "nomore_dev") %>
+
+test:
+  <<: *default
+  database: no_more_test
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  username: <%= ENV.fetch("DB_USERNAME", "nomore") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "nomore_dev") %>
+
+production:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>

@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "focus-controls" do %>
+  <% if active_session %>
+    <%= button_to "Stop Session", stop_focus_session_path(active_session), method: :patch,
+        class: "rounded-lg bg-red-600 px-8 py-3 text-sm font-semibold text-white hover:bg-red-500 transition cursor-pointer",
+        data: { timer_target: "stopBtn", action: "timer#stop" } %>
+  <% else %>
+    <%= button_to "Start Focus", focus_sessions_path, method: :post,
+        class: "rounded-lg bg-green-600 px-8 py-3 text-sm font-semibold text-white hover:bg-green-500 transition cursor-pointer",
+        data: { action: "timer#start" } %>
+  <% end %>
+<% end %>

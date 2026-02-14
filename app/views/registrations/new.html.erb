@@ -1,0 +1,31 @@
+<%= form_with model: @user, url: signup_path, class: "space-y-6" do |f| %>
+  <div>
+    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+    <%= f.email_field :email, required: true, autofocus: true,
+        class: "mt-1 block w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:border-red-500 focus:ring-red-500 focus:outline-none",
+        placeholder: "you@example.com" %>
+  </div>
+
+  <div>
+    <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+    <%= f.password_field :password, required: true,
+        class: "mt-1 block w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:border-red-500 focus:ring-red-500 focus:outline-none",
+        placeholder: "Min 6 characters" %>
+  </div>
+
+  <div>
+    <label for="password_confirmation" class="block text-sm font-medium text-gray-300">Confirm Password</label>
+    <%= f.password_field :password_confirmation, required: true,
+        class: "mt-1 block w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:border-red-500 focus:ring-red-500 focus:outline-none",
+        placeholder: "Type it again" %>
+  </div>
+
+  <div>
+    <%= f.submit "Create Account", class: "w-full rounded-lg bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-950 transition cursor-pointer" %>
+  </div>
+<% end %>
+
+<p class="text-center text-sm text-gray-400">
+  Already have an account?
+  <%= link_to "Sign in", login_path, class: "text-red-400 hover:text-red-300 transition" %>
+</p>
