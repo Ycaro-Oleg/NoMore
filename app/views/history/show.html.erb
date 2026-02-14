@@ -1,0 +1,87 @@
+<div class="space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold text-white">Your Record</h1>
+    <p class="mt-1 text-gray-400">Every commitment you ever made. Nothing deleted. Nothing hidden.</p>
+  </div>
+
+  <% if @commitments.empty? %>
+    <div class="rounded-xl border border-gray-800 bg-gray-900 p-12 text-center">
+      <p class="text-lg text-gray-400">Empty record.</p>
+      <p class="mt-1 text-sm text-gray-500">That's not a good thing — it means you haven't committed to anything yet.</p>
+    </div>
+  <% else %>
+
+    <!-- Summary Bar -->
+    <div class="flex items-center gap-4 text-sm">
+      <span class="text-gray-400"><%= @analytics.total_count %> commitments</span>
+      <span class="text-gray-700">|</span>
+      <span class="text-green-400"><%= @analytics.completed_count %> kept</span>
+      <span class="text-gray-700">|</span>
+      <span class="text-red-400"><%= @analytics.failed_count %> broken</span>
+      <span class="text-gray-700">|</span>
+      <span class="text-blue-400"><%= @analytics.active_count %> active</span>
+    </div>
+
+    <!-- Timeline -->
+    <div class="space-y-3">
+      <% @commitments.each do |commitment| %>
+        <div class="rounded-xl border p-4 flex items-start gap-4
+          <%= case commitment.status
+              when 'completed' then 'border-green-800/50 bg-green-950/30'
+              when 'failed' then 'border-red-800/50 bg-red-950/30'
+              when 'active' then 'border-gray-800 bg-gray-900'
+              end %>">
+
+          <!-- Status indicator -->
+          <div class="mt-1 shrink-0">
+            <% case commitment.status %>
+            <% when 'completed' %>
+              <div class="h-3 w-3 rounded-full bg-green-500"></div>
+            <% when 'failed' %>
+              <div class="h-3 w-3 rounded-full bg-red-500"></div>
+            <% when 'active' %>
+              <div class="h-3 w-3 rounded-full bg-blue-500 animate-pulse"></div>
+            <% end %>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3">
+              <%= link_to commitment.title, commitment_path(commitment),
+                  class: "text-sm font-semibold #{commitment.failed? ? 'text-red-300' : 'text-white'} hover:underline truncate" %>
+              <span class="shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs
+                <%= case commitment.status
+                    when 'completed' then 'bg-green-900/50 text-green-400'
+                    when 'failed' then 'bg-red-900/50 text-red-400'
+                    when 'active' then 'bg-blue-900/50 text-blue-400'
+                    end %>">
+                <%= commitment.status == 'completed' ? 'KEPT' : commitment.status == 'failed' ? 'BROKEN' : 'ACTIVE' %>
+              </span>
+              <span class="shrink-0 text-xs text-gray-500 capitalize"><%= commitment.category %></span>
+            </div>
+
+            <% if commitment.description.present? %>
+              <p class="mt-1 text-sm text-gray-400 truncate"><%= commitment.description %></p>
+            <% end %>
+
+            <div class="mt-2 flex items-center gap-4 text-xs text-gray-500">
+              <span>Committed: <%= commitment.created_at.strftime("%b %d, %Y") %></span>
+              <span>Deadline: <%= commitment.deadline.strftime("%b %d, %Y %I:%M %p") %></span>
+              <% if commitment.completed_at %>
+                <span class="text-green-500">Completed: <%= commitment.completed_at.strftime("%b %d, %Y %I:%M %p") %></span>
+              <% end %>
+            </div>
+
+            <% if commitment.failed? %>
+              <p class="mt-2 text-xs text-red-400/70 italic">You said you'd do this. You didn't.</p>
+            <% end %>
+          </div>
+
+          <% if commitment.active? %>
+            <%= button_to "Complete", complete_commitment_path(commitment), method: :patch,
+                class: "shrink-0 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-500 transition cursor-pointer" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

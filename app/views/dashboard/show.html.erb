@@ -2,31 +2,31 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-3xl font-bold text-white">Dashboard</h1>
-      <p class="mt-1 text-gray-400">Your commitments are watching. No more excuses.</p>
+      <p class="mt-1 text-gray-400"><%= @messages.dashboard_greeting %></p>
     </div>
     <%= link_to new_commitment_path, class: "inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-500 transition" do %>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
       </svg>
-      New Commitment
+      Commit
     <% end %>
   </div>
 
   <!-- Analytics Cards -->
   <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
     <div class="rounded-xl border border-gray-800 bg-gray-900 p-4">
-      <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Total</p>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Commitments</p>
       <p class="mt-1 text-2xl font-bold text-white"><%= @analytics.total_count %></p>
     </div>
     <div class="rounded-xl border border-gray-800 bg-gray-900 p-4">
-      <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Completion</p>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Kept</p>
       <p class="mt-1 text-2xl font-bold text-green-400"><%= @analytics.completion_rate %>%</p>
       <div class="mt-2 h-1.5 w-full rounded-full bg-gray-800">
         <div class="h-1.5 rounded-full bg-green-500" style="width: <%= @analytics.completion_rate %>%"></div>
       </div>
     </div>
     <div class="rounded-xl border border-gray-800 bg-gray-900 p-4">
-      <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Failed</p>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Broken</p>
       <p class="mt-1 text-2xl font-bold text-red-400"><%= @analytics.fail_rate %>%</p>
       <div class="mt-2 h-1.5 w-full rounded-full bg-gray-800">
         <div class="h-1.5 rounded-full bg-red-500" style="width: <%= @analytics.fail_rate %>%"></div>
@@ -35,12 +35,15 @@
     <div class="rounded-xl border border-gray-800 bg-gray-900 p-4">
       <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Streak</p>
       <p class="mt-1 text-2xl font-bold text-amber-400"><%= @analytics.current_streak %></p>
+      <p class="mt-1 text-xs text-gray-500"><%= @messages.streak_message %></p>
     </div>
   </div>
 
-  <% if @analytics.worst_category.present? %>
-    <div class="rounded-lg border border-amber-800/50 bg-amber-900/20 p-3 text-sm text-amber-300">
-      Your worst category is <strong><%= @analytics.worst_category %></strong> — maybe stop pretending you'll do it.
+  <!-- Category callout -->
+  <% callout = @messages.category_callout(@analytics.worst_category) %>
+  <% if callout %>
+    <div class="rounded-lg border border-red-800/50 bg-red-900/20 p-3 text-sm text-red-300">
+      <%= callout %>
     </div>
   <% end %>
 
@@ -56,7 +59,7 @@
       </div>
     <% else %>
       <div class="rounded-xl border border-gray-800 bg-gray-900 p-8 text-center">
-        <p class="text-gray-400">No active commitments. What are you waiting for?</p>
+        <p class="text-gray-400">No active commitments. Comfortable?</p>
         <%= link_to "Make a commitment", new_commitment_path, class: "mt-3 inline-block text-red-400 hover:text-red-300 text-sm" %>
       </div>
     <% end %>
@@ -66,7 +69,10 @@
   <% completed_and_failed = @commitments.where(status: [:completed, :failed]).limit(5) %>
   <% if completed_and_failed.any? %>
     <div>
-      <h2 class="text-lg font-semibold text-white mb-4">Recent History</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-white">Recent Record</h2>
+        <%= link_to "View all", history_path, class: "text-sm text-gray-400 hover:text-red-400 transition" %>
+      </div>
       <div class="space-y-3">
         <% completed_and_failed.each do |commitment| %>
           <%= render partial: "commitments/commitment", locals: { commitment: commitment } %>

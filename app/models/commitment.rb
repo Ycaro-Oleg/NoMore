@@ -8,13 +8,13 @@ class Commitment < ApplicationRecord
   validates :category, presence: true
   validate :deadline_must_be_in_the_future, on: :create
 
+  scope :past_deadline, -> { active.where(deadline: ...Time.current) }
+
   private
 
   def deadline_must_be_in_the_future
-    if deadline.present? && deadline <= Time.current
-      errors.add(:deadline, "can't be in the past. No time travel allowed.")
+    if deadline.present? && deadline < 2.minutes.from_now
+      errors.add(:deadline, "must be at least 2 minutes in the future. No time travel allowed.")
     end
   end
-
-  scope :past_deadline, -> { active.where(deadline: ...Time.current) }
 end

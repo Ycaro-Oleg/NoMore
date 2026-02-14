@@ -13,7 +13,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
-      redirect_to root_path, notice: "Account created. No more excuses — time to commit."
+      redirect_to root_path, notice: "You're in. Now make your first commitment — or was signing up the extent of your ambition?"
     else
       flash.now[:alert] = @user.errors.full_messages.join(". ")
       render :new, status: :unprocessable_entity

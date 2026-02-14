@@ -13,7 +13,8 @@ class CommitmentsController < ApplicationController
     @commitment = current_user.commitments.build(commitment_params)
 
     if @commitment.save
-      redirect_to root_path, notice: "Commitment created. The clock is ticking."
+      messages = ::ConfrontationalMessages.new(::UserAnalytics.new(current_user))
+      redirect_to root_path, notice: messages.on_commitment_created
     else
       flash.now[:alert] = @commitment.errors.full_messages.join(". ")
       render :new, status: :unprocessable_entity
@@ -26,7 +27,8 @@ class CommitmentsController < ApplicationController
   def complete
     if @commitment.active?
       @commitment.update!(status: :completed, completed_at: Time.current)
-      redirect_to root_path, notice: "Done. One less excuse."
+      messages = ::ConfrontationalMessages.new(::UserAnalytics.new(current_user))
+      redirect_to root_path, notice: messages.on_commitment_completed
     else
       redirect_to root_path, alert: "This commitment can't be completed anymore."
     end
