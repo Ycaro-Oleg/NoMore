@@ -31,7 +31,7 @@ gem "solid_queue"
 # Background job processing
 gem "sidekiq", "~> 7.0"
 gem "sidekiq-cron", "~> 2.0"
-gem "connection_pool", "~> 2.4"
+gem "connection_pool", "~> 3.0"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
